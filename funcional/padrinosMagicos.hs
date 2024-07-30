@@ -128,7 +128,7 @@ nombreDeInfractores chicos = map nombre chicos
 {-
   listas infinitas 
 
-  infraforesDeDaRules ([timmy] ++ repeat mario)
+  infractoresDeDaRules ([timmy] ++ repeat mario)
 
   --> Ira mostrando una lista repetida con el nombre de Mario, ya que es el que tiene habilidades prohibidas
 -}
