@@ -98,8 +98,8 @@ quienConquistaA unaChica losPretendientes = foldr cumpleCondicion (last losPrete
       | condicion unaChica pretendiente = pretendiente
 
 -- B.b
-dana::Chica 
-dana = Chica "Carolina" (tieneHabilidad "saber cocinar")
+carolina :: Chica 
+carolina = Chica "Carolina" (tieneHabilidad "saber cocinar")
 
 
 -- Punto C - Da Rules --

@@ -29,7 +29,7 @@ recorrioMasDistancia unAuto = (< distancia unAuto) . distancia
 -- 1.c
 
 puesto :: Auto -> Carrera -> Int
-puesto unAuto carrera = (+1) . length . filter (not . recorrioMasDistancia unAuto) $ carrera
+puesto unAuto carrera = (+1) length . filter (not . recorrioMasDistancia unAuto) $ carrera
 
 
 -- Punto 2
@@ -58,14 +58,10 @@ restarVelocidad unValor = max 0 . flip (-) unValor
 type Poder = Auto -> Carrera -> Carrera
 
 terremoto :: Poder
-terremoto unAuto carrera = map (bajarVelocidad 50) . filter (estanCerca unAuto) $ carrera
-
-terremoto' unAuto carrera = afectarALosQueCumplen (estanCerca unAuto) (bajarVelocidad 50) carrera
+terremoto unAuto carrera = afectarALosQueCumplen (estanCerca unAuto) (bajarVelocidad 50) carrera
 
 miguelitos :: Int -> Poder
-miguelitos unaCantidad unAuto carrera = map (bajarVelocidad unaCantidad) . filter (recorrioMasDistancia unAuto) $ carrera
-
-miguelitos' unaCantidad unAuto carrera = afectarALosQueCumplen (recorrioMasDistancia unAuto) (bajarVelocidad unaCantidad) carrera
+miguelitos unaCantidad unAuto carrera = afectarALosQueCumplen (recorrioMasDistancia unAuto) (bajarVelocidad unaCantidad) carrera
 
 
 {-
@@ -75,8 +71,6 @@ miguelitos' unaCantidad unAuto carrera = afectarALosQueCumplen (recorrioMasDista
 -}
 
 jetPack :: Int -> Poder
--- jetPack unTiempo unAuto carrera = cambiarVelocidad (const velocidad unAuto) . corra unTiempo . cambiarVelocidad (2*) $ unAuto
-
 jetPack unTiempo unAuto carrera = afectarALosQueCumplen (unAuto==) (activarJetPack unTiempo) carrera
 
 
@@ -92,6 +86,7 @@ afectarALosQueCumplen criterio efecto lista = (map efecto . filter criterio) lis
 type Puesto = (Int, String)
 type Evento = Carrera -> Carrera
 
+-- 4.a
 simularCarrera :: Carrera -> [Evento] -> [Puesto]
 simularCarrera carrera eventos = tablaDePosiciones (aplicarEventos carrera eventos)
 
@@ -101,5 +96,39 @@ aplicarEventos carrera (x:xs) = aplicarEventos (x carrera) xs
 
 tablaDePosiciones :: Carrera -> [Puesto]
 tablaDePosiciones carrera = map (\unAuto -> (puesto unAuto carrera, color unAuto)) carrera
+
+
+--4.b
+correnTodos :: Int -> Carrera -> Carrera
+correnTodos unTiempo carrera = map (corra unTiempo) carrera
+
+usaPowerUp :: Poder -> String -> Carrera -> Carrera
+usaPowerUp unPoder unColor carrera = unPoder (obtenerAutoPorColor unColor carrera) carrera
+
+obtenerAutoPorColor :: String -> Carrera -> Auto
+obtenerAutoPorColor unColor carrera = head . filter ((==unColor) . color) $ carrera
+
+
+--4.c
+
+
+blanco :: Auto
+blanco = Auto "Blanco" 120 0
+
+rojo :: Auto
+rojo = Auto "Rojo" 120 0
+
+azul :: Auto
+azul = Auto "Azul" 120 0
+
+negro :: Auto
+negro = Auto "Negro" 120 0
+
+carreraDeAutos :: [Auto]
+carreraDeAutos = [blanco, negro, rojo, azul]
+
+eventosDeCarrera :: [Carrera -> Carrera]
+eventosDeCarrera = [correnTodos 30, usaPowerUp (jetPack 3) "Azul", usaPowerUp terremoto "Blanco", correnTodos 40, usaPowerUp (miguelitos 20) "Blanco", usaPowerUp (jetPack 6) "Negro", correnTodos 10]
+
 
 -- Punto 5
